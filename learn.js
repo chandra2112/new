@@ -1,1 +1,1 @@
-(()=>console.log("Hello Worldbj"))()
+(()=>console.log("Hello World"))()
