@@ -1,1 +1,1 @@
-(()=>console.log("Hello World  xc "))()
+(() => console.log("Hello World"))()
