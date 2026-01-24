@@ -1,4 +1,5 @@
 import Product from "../models/Product.js";
+
 import mongoose from "mongoose";
 
 export const createProduct = async (req, res) => {
@@ -12,8 +13,11 @@ export const createProduct = async (req, res) => {
       description,
       price,
       imageUrl,
-    });
+    })
+    
+    
     res.status(201).json(product);
+
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -21,12 +25,25 @@ export const createProduct = async (req, res) => {
 
 export const getProducts = async (req, res) => {
   try {
-    const products = await Product.find();
+    const { title = "", page = 1, limit = 2 } = req.query;
+
+    const query = title
+      ? { title: { $regex: title, $options: "i" } }
+      : {};
+
+    const products = await Product.find(query)
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(Number(limit))
+      .select("title price imageUrl")
+      .lean();
+
     res.status(200).json(products);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 export const getProductById = async (req, res) => {
   try {
@@ -47,6 +64,7 @@ export const getProductById = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 export const updateProduct = async (req, res) => {
   try {
@@ -86,3 +104,5 @@ export const deleteProduct = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+
